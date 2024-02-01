@@ -112,7 +112,7 @@ std::queue<Product*> MyDataStore::viewCart(std::string username)
 {
     if(users_.find(username) == users_.end())
     {
-        std::cout << "Invalid request" << std::endl;
+        std::cout << "Invalid username" << std::endl;
         return std::queue<Product*>();
     }
     return cart_[users_[username]];
@@ -123,7 +123,7 @@ void MyDataStore::buyCart(std::string username)
 
     if(users_.find(username) == users_.end())
     {
-        std::cout << "Invalid request" << std::endl;
+        std::cout << "Invalid username" << std::endl;
         return;
     }
 
