@@ -4,11 +4,13 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <queue>
 #include <algorithm>
 #include "product.h"
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "store.h"
 
 using namespace std;
 struct ProdNameSorter {
@@ -17,6 +19,7 @@ struct ProdNameSorter {
     }
 };
 void displayProducts(vector<Product*>& hits);
+void displayProducts(queue<Product*>& hits);
 
 int main(int argc, char* argv[])
 {
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -100,7 +103,41 @@ int main(int argc, char* argv[])
                 done = true;
             }
 	    /* Add support for other commands here */
-
+            else if (cmd == "ADD") {
+                //ADD username hit_result_index
+                string username;
+                int index;
+                if(ss >> username >> index) {
+                    if (index > 0 && index <= hits.size()) {
+                        ds.addCart(username, hits[index-1]);
+                    }
+                    else {
+                        cout << "Invalid request" << endl;
+                    }
+                }
+                else {
+                    cout << "Invalid request" << endl;
+                }
+            } else if (cmd == "VIEWCART") {
+                //VIEWCART username
+                string username;
+                if(ss >> username) {
+                    std::queue<Product*> cart = ds.viewCart(username);
+                    displayProducts(cart);
+                }
+                else {
+                    cout << "Invalid request" << endl;
+                }
+            } else if (cmd == "BUYCART") {
+                //BUYCART username
+                string username;
+                if(ss >> username) {
+                    ds.buyCart(username);
+                }
+                else {
+                    cout << "Invalid request" << endl;
+                }
+            }
 
 
 
@@ -120,11 +157,25 @@ void displayProducts(vector<Product*>& hits)
     	cout << "No results found!" << endl;
     	return;
     }
-    std::sort(hits.begin(), hits.end(), ProdNameSorter());
     for(vector<Product*>::iterator it = hits.begin(); it != hits.end(); ++it) {
         cout << "Hit " << setw(3) << resultNo << endl;
         cout << (*it)->displayString() << endl;
         cout << endl;
+        resultNo++;
+    }
+}
+void displayProducts(queue<Product*>& hits)
+{
+    int resultNo = 1;
+    if (hits.empty()) {
+    	cout << "No results found!" << endl;
+    	return;
+    }
+    while(!hits.empty()) {
+        cout << "Hit " << setw(3) << resultNo << endl;
+        cout << hits.front()->displayString() << endl;
+        cout << endl;
+        hits.pop();
         resultNo++;
     }
 }

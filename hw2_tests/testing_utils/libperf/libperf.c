@@ -21,6 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA              *
  * 02110-1301, USA.                                                           *
  ******************************************************************************/
+#define _POSIX_C_SOURCE 199309L
 
 #include <assert.h>
 #include <fcntl.h>
@@ -30,7 +31,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stropts.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/stat.h>
